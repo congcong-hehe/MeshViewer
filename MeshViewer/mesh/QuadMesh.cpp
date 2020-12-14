@@ -1,21 +1,22 @@
-#include "TriMesh.h"
+#include "QuadMesh.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <QOpenGLWidget>
+#include <string>
 
-TriMesh::TriMesh(): vbo_(QOpenGLBuffer::VertexBuffer),
+QuadMesh::QuadMesh():vbo_(QOpenGLBuffer::VertexBuffer),
 ebo_(QOpenGLBuffer::IndexBuffer)
 {
 
 }
 
-TriMesh::~TriMesh()
+QuadMesh::~QuadMesh()
 {
 
 }
 
-void TriMesh::loadFile(std::string file_name)
+void QuadMesh::loadFile(std::string file_name)
 {
 	std::ifstream in(file_name);
 
@@ -24,7 +25,7 @@ void TriMesh::loadFile(std::string file_name)
 		std::cout << "The file can not be opened!" << std::endl;
 		return;
 	}
-	
+
 	REAL x_min = FLT_MAX, x_max = FLT_MIN;
 	REAL y_min = FLT_MAX, y_max = FLT_MIN;
 	REAL z_min = FLT_MAX, z_max = FLT_MIN;
@@ -34,7 +35,7 @@ void TriMesh::loadFile(std::string file_name)
 	{
 		std::string tag;
 		std::istringstream is(line);
-		
+
 		is >> tag;
 		if (tag == "v")
 		{
@@ -53,18 +54,19 @@ void TriMesh::loadFile(std::string file_name)
 		}
 		else if (tag == "f")
 		{
-			Tri tri;
-			is >> tri.v[0] >> tri.v[1] >> tri.v[2];
-			tri.v[0] --;
-			tri.v[1] --;
-			tri.v[2] --;
-			tris_.push_back(tri);
+			Quad quad;
+			is >> quad.v[0] >> quad.v[1] >> quad.v[2] >> quad.v[3];
+			quad.v[0] --;
+			quad.v[1] --;
+			quad.v[2] --;
+			quad.v[3] --;
+			quads_.push_back(quad);
 		}
 	}
 	in.close();
 
 	num_vtx_ = vtxs_.size();
-	num_tri_ = tris_.size();
+	num_quad_ = quads_.size();
 
 	// 计算模型的缩放比例，保证模型的大小在窗口中合适的显示
 	scale_factor_ = fmax(fmax((x_max - x_min), (y_max - y_min)), (z_max - z_min));
@@ -72,7 +74,7 @@ void TriMesh::loadFile(std::string file_name)
 	translate_ = QVector3D(-(x_max + x_min) / 2.0f, -(y_max + y_min) / 2.0f, -(y_max + y_min) / 2.0f);
 }
 
-void TriMesh::setMesh()
+void QuadMesh::setMesh()
 {
 	//  顶点着色器
 	bool success = shader_program_.addShaderFromSourceFile(QOpenGLShader::Vertex, "GLSL/vert.glsl");
@@ -109,7 +111,7 @@ void TriMesh::setMesh()
 	// 创建并分配ebo对象
 	ebo_.create();
 	ebo_.bind();
-	ebo_.allocate(&tris_[0], tris_.size() * sizeof(Tri));
+	ebo_.allocate(&quads_[0], quads_.size() * sizeof(Quad));
 
 	int attr = -1;
 	attr = shader_program_.attributeLocation("aPos");
@@ -123,10 +125,9 @@ void TriMesh::setMesh()
 	QMatrix4x4 view;
 	view.lookAt(QVector3D(0.0f, 0.0f, 4.0f), QVector3D(0.0f, 0.0f, 0.0f), QVector3D(0.0f, 1.0f, 0.0f));
 	shader_program_.setUniformValue("view", view);
-
 }
 
-void TriMesh::drawMesh(QOpenGLFunctions_3_3_Core* ff, QMatrix4x4 &projection, QMatrix4x4 &model)
+void QuadMesh::drawMesh(QOpenGLFunctions_3_3_Core* ff, QMatrix4x4& projection, QMatrix4x4& model)
 {
 	model.translate(translate_);		// 平移模型到原点
 	model.scale(1.0f / scale_factor_ * 2.0f);		// 对模型进行一定比例的缩放，使比例合适
@@ -134,14 +135,16 @@ void TriMesh::drawMesh(QOpenGLFunctions_3_3_Core* ff, QMatrix4x4 &projection, QM
 	shader_program_.setUniformValue("projection", projection);
 	shader_program_.setUniformValue("model", model);
 
+	//QOpenGLVertexArrayObject::Binder vaoBind(&vao_);
 	vao_.bind();
 
-	ff->glDrawElements(GL_TRIANGLES, tris_.size() * 3, GL_UNSIGNED_INT, 0);		// 绘制
+	ff->glDrawElements(GL_QUADS, quads_.size() * 4, GL_UNSIGNED_INT, 0);		// 绘制
 
 	shader_program_.release();
 }
 
-bool TriMesh::isEmpty()
+bool QuadMesh::isEmpty()
 {
 	return num_vtx_ == 0;
 }
+

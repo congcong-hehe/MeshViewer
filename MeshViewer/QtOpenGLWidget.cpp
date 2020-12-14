@@ -21,8 +21,8 @@ QtOpenGLWidget::~QtOpenGLWidget()
 void QtOpenGLWidget::initializeGL()
 {
     ff = QOpenGLContext::currentContext()->versionFunctions<QOpenGLFunctions_3_3_Core>();
-    mesh_ = new TriMesh;
-    mesh_->loadFile("../model/cow.obj");
+    mesh_ = new QuadMesh;
+    mesh_->loadFile("../model/3cube.obj");
     mesh_->setMesh();
     ff->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);      //设置绘制的线框模式
 }
@@ -46,7 +46,7 @@ void QtOpenGLWidget::paintGL()
     ff->glClearColor(0.2f, 0.3f, 0.3f, 1.0f);   // 清屏颜色,(背景颜色)
     ff->glClear(GL_COLOR_BUFFER_BIT);   // 清空颜色缓存
 
-    if (mesh_ != nullptr && mesh_->num_vtx_ != 0)   // 防止出现文件为空的情况，访问首地址越界访问
+    if (mesh_ != nullptr && !mesh_->isEmpty())   // 防止出现文件为空的情况，访问首地址越界访问
     {
         mesh_->drawMesh(ff, projection, model);
 

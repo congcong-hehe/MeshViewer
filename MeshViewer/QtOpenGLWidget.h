@@ -11,6 +11,7 @@
 #include <QWheelEvent>
 #include <memory>
 #include "mesh/TriMesh.h"
+#include "mesh/QuadMesh.h"
 
 class QtOpenGLWidget : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core
 {
@@ -29,7 +30,7 @@ public:
 	virtual void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 	virtual void wheelEvent(QWheelEvent* event) Q_DECL_OVERRIDE;
 
-	TriMesh* mesh_{ nullptr };
+	Mesh* mesh_{ nullptr };
 
 private:
 	bool mouse_pressed_{ false };

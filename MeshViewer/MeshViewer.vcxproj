@@ -68,7 +68,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="mesh\QuadMesh.cpp" />
     <ClCompile Include="mesh\TriMesh.cpp" />
     <ClCompile Include="QtOpenGLWidget.cpp" />
     <QtRcc Include="MeshViewer.qrc" />
@@ -95,11 +96,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GLSL\triangle.frag" />
-    <None Include="GLSL\triangle.vert" />
+    <None Include="GLSL\frag.glsl" />
+    <None Include="GLSL\vert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mesh\Mesh.h" />
+    <ClInclude Include="mesh\Quad.h" />
+    <ClInclude Include="mesh\QuadMesh.h" />
     <ClInclude Include="mesh\REAL.h" />
     <ClInclude Include="mesh\Tri.h" />
     <ClInclude Include="mesh\TriMesh.h" />

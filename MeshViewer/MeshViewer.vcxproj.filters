@@ -50,12 +50,15 @@
     <ClCompile Include="QtOpenGLWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mesh\QuadMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="GLSL\triangle.frag">
+    <None Include="GLSL\frag.glsl">
       <Filter>GLSL</Filter>
     </None>
-    <None Include="GLSL\triangle.vert">
+    <None Include="GLSL\vert.glsl">
       <Filter>GLSL</Filter>
     </None>
   </ItemGroup>
@@ -73,6 +76,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mesh\Vec3f.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh\Quad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh\QuadMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
