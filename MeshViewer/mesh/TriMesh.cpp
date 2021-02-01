@@ -25,10 +25,11 @@ void TriMesh::loadFile(std::string file_name)
 		return;
 	}
 	
-	REAL x_min = FLT_MAX, x_max = FLT_MIN;
-	REAL y_min = FLT_MAX, y_max = FLT_MIN;
-	REAL z_min = FLT_MAX, z_max = FLT_MIN;
+	REAL x_min = FLT_MAX, x_max = -FLT_MAX;
+	REAL y_min = FLT_MAX, y_max = -FLT_MAX;
+	REAL z_min = FLT_MAX, z_max = -FLT_MAX;
 
+	int n = 0;	// 点的数量
 	std::string line;
 	while (std::getline(in, line))
 	{
@@ -50,11 +51,20 @@ void TriMesh::loadFile(std::string file_name)
 			z_max = fmax(z_max, vec3f.z);
 
 			vtxs_.push_back(vec3f);
+			n++;
 		}
 		else if (tag == "f")
 		{
 			Tri tri;
 			is >> tri.v[0] >> tri.v[1] >> tri.v[2];
+
+			if (tri.v[0] < 0)
+			{
+				tri.v[0] += n + 1;
+				tri.v[1] += n + 1;
+				tri.v[2] += n + 1;
+			}
+
 			tri.v[0] --;
 			tri.v[1] --;
 			tri.v[2] --;
